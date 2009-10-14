@@ -1,3 +1,9 @@
+begin
+  require 'RedCloth' unless defined? RedCloth
+rescue LoadError
+  nil
+end
+
 module Err 
   module Acts #:nodoc: all
     module Textiled
@@ -106,3 +112,5 @@ module Err
     end
   end
 end
+
+ActiveRecord::Base.send(:include, Err::Acts::Textiled)

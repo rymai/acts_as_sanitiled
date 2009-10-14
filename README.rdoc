@@ -1,13 +1,24 @@
-= Acts as Textiled
+= Acts as Sanitiled
 
-This simple plugin allows you to forget about constantly rendering Textile in 
-your application.  Instead, you can rest easy knowing the Textile fields you 
-want to display as HTML will always be displayed as HTML (unless you tell your
-code otherwise).
+This plugin, based on Chris Wanstrath's venerable acts_as_textiled, extends the
+automatic textiling functionality to sanitization as well using as its basis Ryan
+Grove's powerful yet simple Sanitize gem.
 
-No database modifications are needed.
+The reasoning behind this approach is simple.  Filtering input before it is saved to the database (as xss_terminate and many other popular plugins do) often fails to preserve user intent.  On the other hand, filtering output at the template level is error prone, and you are begging to get pwned.  Short of some sort of taint mode (which Rails 3 will have!), I believe the method employed by acts_as_textiled is the next best thing: you get safe output by default, but input is never corrupted.
 
-You need RedCloth, of course.  And Rails.
+== Requirements
+
+Sanitize 1.1.0
+Nokogiri 1.3.3
+RedCloth (for Textile support)
+ActiveRecord (tested on 2.3.4)
+
+== Changes from acts_as_textiled
+
+acts_as_sanitiled mostly maintains the API, but one noticeable difference is that it
+needs to expose the Sanitize config.  Therefore acts_as_textiled use of a hash to
+provide per-column RedCloth configuration had to be replaced with Sanitize config.
+RedCloth options can still be passed as an array that applies to all fields listed.
 
 == Usage
 
@@ -50,28 +61,23 @@ You need RedCloth, of course.  And Rails.
 
 == Different Modes
 
-RedCloth supports different modes, such as :lite_mode.  To use a mode on 
-a specific attribute simply pass it in as an options hash after any
-attributes you don't want to mode-ify.  Like so:
+Sanitize supports a detailed configuration hash describing what HTML is allowed (among
+other things). This can be passed at the end of the declaration.  See the Sanitize docs
+for more information.
 
   class Story < ActiveRecord::Base
-    acts_as_textiled :body_text, :description => :lite_mode
+    acts_as_sanitiled :body_text, :elements => ['em','strong','div'], :attributes => {'div' => ['class','id']}
   end
 
-Or:
+RedCloth supports different modes, such as :lite_mode.  To use a mode on
+a specific attribute simply pass one or more options in an array after the field names.  Like so:
 
   class Story < ActiveRecord::Base
-    acts_as_textiled :body_text => :lite_mode, :description => :lite_mode
-  end
-
-You can also pass in multiple modes per attribute:
-
-  class Story < ActiveRecord::Base
-    acts_as_textiled :body_text, :description => [ :lite_mode, :no_span_caps ]
+    acts_as_sanitiled :body_text, :description, [ :lite_mode ]
   end
 
 Get it?  Now let's say you have an admin tool and you want the text to be displayed
-in the text boxes / fields as plaintext.  Do you have to change all your views?  
+in the text boxes / fields as plaintext.  Do you have to change all your views?
 
 Hell no.
 
@@ -87,7 +93,7 @@ You'll see the Textile plaintext in the text field.  It Just Works.
 
 == form tags
 
-If you're being a bit unconvential, no worries.  You can still get at your 
+If you're being a bit unconvential, no worries.  You can still get at your
 raw Textile like so:
 
   Description: <br/> <%= text_field_tag :description, @story.description(:source) %>
@@ -96,7 +102,7 @@ And there's always object.textiled = false, as demo'd above.
 
 == Pre-fetching
 
-acts_as_textiled locally caches rendered HTML once the attribute in question has 
+acts_as_sanitiled locally caches rendered HTML once the attribute in question has
 been requested.  Obviously this doesn't bode well for marshalling or caching.
 
 If you need to force your object to build and cache HTML for all textiled attributes,
@@ -105,7 +111,7 @@ call the +textilize+ method on your object.
 If you're real crazy you can even do something like this:
 
   class Story < ActiveRecord::Base
-    acts_as_textiled :body_text, :description
+    acts_as_sanitiled :body_text, :description
 
     def after_find
       textilize
@@ -118,3 +124,4 @@ won't need to do this.
 Enjoy.
 
 * By Chris Wanstrath [ chris[at]ozmm[dot]org ]
+* Butchered and Sanitized by Gabe da Silveira [ gabe[at]websaviour[dot]com ]

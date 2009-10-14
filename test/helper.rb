@@ -53,7 +53,7 @@ class ActiveRecord
   end
 end unless defined? ActiveRecord
 
-require File.dirname(__FILE__) + '/../init'
+require 'acts_as_sanitiled.rb'
 
 class Author < ActiveRecord::Base
   acts_as_textiled :blog => :lite_mode
