@@ -56,11 +56,12 @@ end unless defined? ActiveRecord
 require 'acts_as_sanitiled.rb'
 
 class Author < ActiveRecord::Base
-  acts_as_textiled :blog => :lite_mode
+  acts_as_textiled :blog, [:lite_mode]
 end
 
 class Story < ActiveRecord::Base
-  acts_as_textiled :body, :description => :lite_mode
+  acts_as_textiled :body
+  acts_as_textiled :description, [:lite_mode]
 
   def author
     @author ||= Author.find(author_id)
@@ -68,7 +69,8 @@ class Story < ActiveRecord::Base
 end
 
 class StoryWithAfterFind < Story 
-  acts_as_textiled :body, :description => :lite_mode
+  acts_as_textiled :body
+  acts_as_textiled :description, [:lite_mode]
 
   def after_find 
     textilize 

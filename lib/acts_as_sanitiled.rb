@@ -13,12 +13,14 @@ module Err
 
       module ClassMethods
         def acts_as_textiled(*attributes)
-          @textiled_attributes = []
+          @textiled_attributes ||= []
 
           @textiled_unicode = String.new.respond_to? :chars
 
-          ruled = attributes.last.is_a?(Hash) ? attributes.pop : {}
-          attributes += ruled.keys
+          sanitize_options = attributes.last.is_a?(Hash) ? attributes.pop : {}
+          red_cloth_options = attributes.last && attributes.last.is_a?(Array) ? attributes.pop : []
+
+          raise 'You must specify some attributes textile/sanitize' if attributes.empty?
 
           type_options = %w( plain source )
 
@@ -27,7 +29,7 @@ module Err
               type = type.first
 
               if type.nil? && self[attribute]
-                textiled[attribute.to_s] ||= RedCloth.new(self[attribute], Array(ruled[attribute])).to_html 
+                textiled[attribute.to_s] ||= RedCloth.new(self[attribute], red_cloth_options).to_html 
               elsif type.nil? && self[attribute].nil?
                 nil
               elsif type_options.include?(type.to_s)
