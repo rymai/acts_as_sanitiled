@@ -13,7 +13,7 @@ end
 class ActiveRecord
   class Base
     attr_reader :attributes
-    
+
     def initialize(attributes = {})
       @attributes = attributes.dup
       after_find if respond_to?(:after_find)
@@ -24,7 +24,7 @@ class ActiveRecord
         @attributes[key = name.to_s.sub('=','')] = value = args.first
         write_attribute key, value
       else
-        self[name.to_s] 
+        self[name.to_s]
       end
     end
 
@@ -66,16 +66,16 @@ class Story < ActiveRecord::Base
   end
 end
 
-class StoryWithAfterFind < Story 
+class StoryWithAfterFind < Story
   acts_as_textiled :body
   acts_as_textiled :description, [:lite_mode]
 
-  def after_find 
-    textilize 
+  def after_find
+    textilize
   end
 
-  def self.name 
-    Story.name 
+  def self.name
+    Story.name
   end
 
   def author
