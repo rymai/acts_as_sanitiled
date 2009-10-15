@@ -17,7 +17,7 @@ module ActsAsSanitiled #:nodoc: all
       skip_textile = options.delete(:skip_textile)
       skip_sanitize = options.delete(:skip_sanitize)
 
-      raise 'Both textile and sanitize were skipped' if skip_textile && skip_sanitize 
+      raise 'Both textile and sanitize were skipped' if skip_textile && skip_sanitize
 
       sanitize_options = options.empty? ? Sanitize::Config::RELAXED : options
       red_cloth_options = attributes.last && attributes.last.is_a?(Array) ? attributes.pop : []
@@ -47,7 +47,7 @@ module ActsAsSanitiled #:nodoc: all
           end
         end
 
-        define_method("#{attribute}_plain",  proc { strip_redcloth_html(__send__(attribute)) if __send__(attribute) } )
+        define_method("#{attribute}_plain",  proc { strip_html(__send__(attribute)) if __send__(attribute) } )
         define_method("#{attribute}_source", proc { __send__("#{attribute}_before_type_cast") } )
 
         @textiled_attributes << attribute
@@ -57,7 +57,7 @@ module ActsAsSanitiled #:nodoc: all
     end
 
     def textiled_attributes
-      Array(@textiled_attributes) 
+      Array(@textiled_attributes)
     end
   end
 
@@ -89,34 +89,9 @@ module ActsAsSanitiled #:nodoc: all
     end
 
   private
-    def strip_redcloth_html(html)
-      returning html.dup.gsub(html_regexp, '') do |h|
-        redcloth_glyphs.each do |(entity, char)|
-          sub = [ :gsub!, entity, char ]
-          @textiled_unicode ? h.chars.send(*sub) : h.send(*sub)
-        end
-      end
-    end
-
-    def redcloth_glyphs
-       [[ '&#8217;', "'" ], 
-        [ '&#8216;', "'" ],
-        [ '&lt;', '<' ], 
-        [ '&gt;', '>' ], 
-        [ '&#8221;', '"' ],
-        [ '&#8220;', '"' ],            
-        [ '&#8230;', '...' ],
-        [ '\1&#8212;', '--' ], 
-        [ ' &rarr; ', '->' ], 
-        [ ' &#8211; ', '-' ], 
-        [ '&#215;', 'x' ], 
-        [ '&#8482;', '(TM)' ], 
-        [ '&#174;', '(R)' ],
-        [ '&#169;', '(C)' ]]
-    end
-
-    def html_regexp
-      %r{<(?:[^>"']+|"(?:\\.|[^\\"]+)*"|'(?:\\.|[^\\']+)*')*>}xm
+    def strip_html(html)
+      html.gsub!(%r{</p>\n<p>}, "</p>\n\n<p>") # Workaround RedCloth 4.2.x issue
+      Nokogiri::HTML::DocumentFragment.parse(html).inner_text
     end
   end
 end
