@@ -1,13 +1,9 @@
-$:.unshift File.dirname(__FILE__) + '/../lib'
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-begin
-  require 'acts_as_sanitiled'
-  require 'bacon'
-  require 'active_support'
-rescue LoadError
-  puts "acts_as_sanitiled requires bacon to run its tests"
-  exit
-end
+require 'acts_as_sanitiled'
+require 'bacon'
+require 'active_support'
 
 class ActiveRecord
   class Base
@@ -39,3 +35,5 @@ class Story < ActiveRecord::Base
   acts_as_textiled :body
   acts_as_textiled :description, [:lite_mode]
 end
+
+Bacon.summary_on_exit

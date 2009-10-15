@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), 'helper')
+require 'spec_helper'
 
 describe 'New object with textiled description' do
   before do
