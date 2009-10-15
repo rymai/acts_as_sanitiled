@@ -7,8 +7,23 @@ The reasoning behind this approach is simple.  Filtering input before it is save
 == Requirements
 
 * Sanitize >1.1.0 (prior versions had a whitespace issue)
+* Nokogiri >1.3.3
 * RedCloth (for Textile support)
 * ActiveRecord (tested on 2.3.4)
+
+== Installation
+
+acts_as_sanitiled is distributed via Gemcutter.  If you are enlightened you can simply do:
+
+  gem install acts_as_sanitiled
+
+If you haven't checkout out Gemcutter yet:
+
+  gem install --source http://gemcutter.org acts_as_sanitiled
+
+Then in your Rails environment.rb:
+
+  config.gem 'acts_as_sanitiled'
 
 == Changes from acts_as_textiled
 
