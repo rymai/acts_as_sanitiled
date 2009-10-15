@@ -11,7 +11,6 @@ class ActiveRecord
 
     def initialize(attributes = {})
       @attributes = attributes.dup.stringify_keys
-      after_find if respond_to?(:after_find)
     end
 
     def method_missing(name, *args)
@@ -32,8 +31,13 @@ end unless defined? ActiveRecord
 ActiveRecord::Base.send(:include, ActsAsSanitiled)
 
 class Story < ActiveRecord::Base
-  acts_as_textiled :body
-  acts_as_textiled :description, [:lite_mode]
+  acts_as_sanitiled :body
+  acts_as_sanitiled :description, [:lite_mode]
+end
+
+class Author < ActiveRecord::Base
+  acts_as_sanitized :name, :elements => ['b','em']
+  acts_as_textiled :bio
 end
 
 Bacon.summary_on_exit

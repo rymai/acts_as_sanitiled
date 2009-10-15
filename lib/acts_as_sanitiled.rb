@@ -9,6 +9,20 @@ module ActsAsSanitiled #:nodoc: all
 
   module ClassMethods
     def acts_as_textiled(*attributes)
+      raise "only acts_as_sanitized or acts_as_sanitiled can take an options hash" if attributes.last.is_a?(Hash)
+
+      attributes << {:skip_sanitize => true}
+      acts_as_sanitiled(*attributes)
+    end
+
+    def acts_as_sanitized(*attributes)
+      options = attributes.last.is_a?(Hash) ? attributes.pop : {}
+      options[:skip_textile] = true
+      attributes << options
+      acts_as_sanitiled(*attributes)
+    end
+
+    def acts_as_sanitiled(*attributes)
       @textiled_attributes ||= []
 
       @textiled_unicode = String.new.respond_to? :chars

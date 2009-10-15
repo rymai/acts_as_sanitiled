@@ -71,10 +71,49 @@ EOF
 
   it "should be able to do on-demand textile caching" do
     @story.textiled.size.should.equal 0
-
     @story.textilize
-
     @story.textiled.size.should.equal 2
     @story.description.should.equal @desc_html
+  end
+
+  it "should clear textiled hash on reload" do
+    @story.textilize
+    @story.textiled.size.should.equal 2
+    @story.reload
+    @story.textiled.size.should.equal 0
+  end
+end
+
+describe 'An object with one textiled and one sanitized field' do
+  before do
+    @author = Author.new(
+      :name => '<b>King *George*</p>',
+      :bio => '*Bold* but with <script>')
+  end
+
+  it "should sanitize but not textilize name" do
+    @author.name.should.equal '<b>King *George*</b>'
+  end
+
+  it "should textilize but not sanitize bio" do
+    @author.bio.should.equal '<p><strong>Bold</strong> but with <script></p>'
+  end
+end
+
+describe 'Defining fields on an ActiveRecord object' do
+  it "should not allow both skip_textile and skip_sanitize" do
+    proc do
+      class Foo < ActiveRecord::Base
+        acts_as_sanitiled :body, :skip_sanitize => true, :skip_textile => true
+      end
+    end.should.raise
+  end
+
+  it "should not allow options hash on acts_as_textiled" do
+    proc do
+      class Foo < ActiveRecord::Base
+        acts_as_textiled :body, :option => :is_verboten
+      end
+    end.should.raise
   end
 end
