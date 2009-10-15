@@ -2,11 +2,10 @@ $:.unshift File.dirname(__FILE__) + '/../lib'
 
 begin
   require 'acts_as_sanitiled'
-  require 'yaml'
-  require 'test/spec'
+  require 'bacon'
   require 'active_support'
 rescue LoadError
-  puts "acts_as_sanitiled requires yaml, and test-spec to run its tests"
+  puts "acts_as_sanitiled requires bacon to run its tests"
   exit
 end
 
@@ -15,7 +14,7 @@ class ActiveRecord
     attr_reader :attributes
 
     def initialize(attributes = {})
-      @attributes = attributes.dup
+      @attributes = attributes.dup.stringify_keys
       after_find if respond_to?(:after_find)
     end
 
@@ -28,60 +27,15 @@ class ActiveRecord
       end
     end
 
-    def save
-      true
-    end
-
-    def reload
-      self
-    end
-
     def [](value)
       @attributes[value.to_s.sub('_before_type_cast', '')]
-    end
-
-    def self.global
-      eval("$#{name.downcase}")
-    end
-
-    def self.find(id)
-      item = global.detect { |key, hash| hash['id'] == id }.last
-      new(item)
     end
   end
 end unless defined? ActiveRecord
 
 ActiveRecord::Base.send(:include, ActsAsSanitiled)
 
-class Author < ActiveRecord::Base
-  acts_as_textiled :blog, [:lite_mode]
-end
-
 class Story < ActiveRecord::Base
   acts_as_textiled :body
   acts_as_textiled :description, [:lite_mode]
-
-  def author
-    @author ||= Author.find(author_id)
-  end
 end
-
-class StoryWithAfterFind < Story
-  acts_as_textiled :body
-  acts_as_textiled :description, [:lite_mode]
-
-  def after_find
-    textilize
-  end
-
-  def self.name
-    Story.name
-  end
-
-  def author
-    @author ||= Author.find(author_id)
-  end
-end
-
-$author = YAML.load_file(File.dirname(__FILE__) + '/fixtures/authors.yml')
-$story  = YAML.load_file(File.dirname(__FILE__) + '/fixtures/stories.yml')
