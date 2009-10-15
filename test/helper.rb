@@ -22,7 +22,7 @@ class ActiveRecord
     end
 
     def method_missing(name, *args)
-      if name.to_s[/=/]
+      if name.to_s[%r{=}]
         @attributes[key = name.to_s.sub('=','')] = value = args.first
         write_attribute key, value
       else

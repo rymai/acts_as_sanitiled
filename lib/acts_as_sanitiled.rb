@@ -1,3 +1,5 @@
+require 'sanitize' unless defined? Sanitize
+
 begin
   require 'RedCloth' unless defined? RedCloth
 rescue LoadError
@@ -17,10 +19,16 @@ module Err
 
           @textiled_unicode = String.new.respond_to? :chars
 
-          sanitize_options = attributes.last.is_a?(Hash) ? attributes.pop : {}
+          options = attributes.last.is_a?(Hash) ? attributes.pop : {}
+          skip_textile = options.delete(:skip_textile)
+          skip_sanitize = options.delete(:skip_sanitize)
+
+          raise 'Both textile and sanitize were skipped' if skip_textile && skip_sanitize 
+
+          sanitize_options = options.empty? ? Sanitize::Config::RELAXED : options
           red_cloth_options = attributes.last && attributes.last.is_a?(Array) ? attributes.pop : []
 
-          raise 'You must specify some attributes textile/sanitize' if attributes.empty?
+          raise 'No attributes were specified to filter' if attributes.empty?
 
           type_options = %w( plain source )
 
@@ -29,7 +37,13 @@ module Err
               type = type.first
 
               if type.nil? && self[attribute]
-                textiled[attribute.to_s] ||= RedCloth.new(self[attribute], red_cloth_options).to_html 
+                if textiled[attribute.to_s].nil?
+                  string = self[attribute]
+                  string = RedCloth.new(string, red_cloth_options).to_html unless skip_textile
+                  string = Sanitize.clean(string, sanitize_options) unless skip_sanitize
+                  textiled[attribute.to_s] = string
+                end
+                textiled[attribute.to_s]
               elsif type.nil? && self[attribute].nil?
                 nil
               elsif type_options.include?(type.to_s)

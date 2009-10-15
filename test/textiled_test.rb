@@ -40,9 +40,9 @@ context "An ActiveRecord instance acting as textiled" do
 
   specify "should pick up changes to attributes" do
     story = Story.find(2)
-    
+
     start_html = '<i>Beautify</i> your <strong>IRb</strong> prompt'
-    story.description.should.equal start_html 
+    story.description.should.equal start_html
 
     story.description = "**IRb** is simple"
     changed_html = "<b>IRb</b> is simple"
@@ -50,23 +50,23 @@ context "An ActiveRecord instance acting as textiled" do
 
     story.save
 
-    story.description.should.equal changed_html 
-    story.description_plain.should.equal 'IRb is simple' 
+    story.description.should.equal changed_html
+    story.description_plain.should.equal 'IRb is simple'
   end
 
   specify "should be able to toggle whether textile is active or not" do
     story = Story.find(2)
-    
+
     desc_html    = '<i>Beautify</i> your <strong>IRb</strong> prompt'
     desc_textile = '__Beautify__ your *IRb* prompt'
 
     story.description.should.equal desc_html
     story.textiled = false
-    story.description.should.equal desc_textile 
+    story.description.should.equal desc_textile
 
     story.save
 
-    story.description.should.equal desc_textile 
+    story.description.should.equal desc_textile
     story.textiled = true
     story.description.should.equal desc_html
   end
@@ -78,9 +78,9 @@ context "An ActiveRecord instance acting as textiled" do
     blog_textile = '"ones zeros majors and minors":http://ozmm.org'
     blog_plain   = 'ones zeros majors and minors'
 
-    story.author.blog.should.equal blog_html 
-    story.author.blog_source.should.equal blog_textile 
-    story.author.blog_plain.should.equal blog_plain 
+    story.author.blog.should.equal blog_html
+    story.author.blog_source.should.equal blog_textile
+    story.author.blog_plain.should.equal blog_plain
   end
 
   specify "should be able to toggle across associations" do
@@ -90,35 +90,35 @@ context "An ActiveRecord instance acting as textiled" do
     blog_textile = '"RedHanded":http://redhanded.hobix.com'
     blog_plain   = 'RedHanded'
 
-    story.author.blog.should.equal blog_html 
+    story.author.blog.should.equal blog_html
     story.author.textiled = false
 
     story.author.blog.should.equal blog_textile
     story.author.textiled = true
 
-    story.author.blog.should.equal blog_html 
+    story.author.blog.should.equal blog_html
   end
 
   specify "should enhance text attributes" do
     story = Story.find(3)
 
-    body_html    = %[<p><em>Textile</em> is useful because it makes text <em>slightly</em> easier to <strong>read</strong>.</p>\n<p>If only it were so <strong>easy</strong> to use in every programming language.  In Rails,<br />\nwith the help of <a href="http://google.com/search?q=acts_as_textiled">acts_as_textiled</a>,<br />\nit&#8217;s way easy.  Thanks in no small part to <span style="color:red;">RedCloth</span>, of course.</p>]
+    body_html    = %[<p><em>Textile</em> is useful because it makes text <em>slightly</em> easier to <strong>read</strong>.</p>\n<p>If only it were so <strong>easy</strong> to use in every programming language.  In Rails,<br />\nwith the help of <a href="http://google.com/search?q=acts_as_textiled">acts_as_textiled</a>,<br />\nit’s way easy.  Thanks in no small part to RedCloth, of course.</p>]
     body_textile = %[_Textile_ is useful because it makes text _slightly_ easier to *read*.\n\nIf only it were so *easy* to use in every programming language.  In Rails,\nwith the help of "acts_as_textiled":http://google.com/search?q=acts_as_textiled,\nit's way easy.  Thanks in no small part to %{color:red}RedCloth%, of course.\n]
-    body_plain   = %[Textile is useful because it makes text slightly easier to read.\nIf only it were so easy to use in every programming language.  In Rails,\nwith the help of acts_as_textiled,\nit's way easy.  Thanks in no small part to RedCloth, of course.]
+    body_plain   = %[Textile is useful because it makes text slightly easier to read.\nIf only it were so easy to use in every programming language.  In Rails,\nwith the help of acts_as_textiled,\nit’s way easy.  Thanks in no small part to RedCloth, of course.]
 
-    story.body.should.equal body_html 
-    story.body_source.should.equal body_textile 
+    story.body.should.equal body_html
+    story.body_source.should.equal body_textile
     story.body_plain.should.equal body_plain
   end
 
   specify "should handle character conversions" do
     story = Story.find(4)
 
-    body_html  = "<p>Is Textile&#8482; the wave of the future?  What about acts_as_textiled&#169;?  It&#8217;s<br />\ndoubtful.  Why does Textile&#8482; smell like <em>Python</em>?  Can we do anything to<br />\nfix that?  No?  Well, I guess there are worse smells &#8211; like Ruby.  jk.</p>\n<p>But seriously, ice &gt; water and water &lt; rain.  But&#8230;nevermind.  1 &#215; 1?  1.</p>\n<p>&#8220;You&#8217;re a good kid,&#8221; he said.  &#8220;Keep it up.&#8221;</p>"
-    body_plain = %[Is Textile(TM) the wave of the future?  What about acts_as_textiled(C)?  It's\ndoubtful.  Why does Textile(TM) smell like Python?  Can we do anything to\nfix that?  No?  Well, I guess there are worse smells-like Ruby.  jk.\nBut seriously, ice > water and water < rain.  But...nevermind.  1 x 1?  1.\n"You're a good kid," he said.  "Keep it up."]
+    body_html  = "<p>Is Textile™ the wave of the future?  What about acts_as_textiled©?  It’s<br />\ndoubtful.  Why does Textile™ smell like <em>Python</em>?  Can we do anything to<br />\nfix that?  No?  Well, I guess there are worse smells – like Ruby.  jk.</p>\n<p>But seriously, ice &gt; water and water &lt; rain.  But…nevermind.  1 × 1?  1.</p>\n<p>“You’re a good kid,” he said.  “Keep it up.”</p>"
+    body_plain = %[Is Textile™ the wave of the future?  What about acts_as_textiled©?  It’s\ndoubtful.  Why does Textile™ smell like Python?  Can we do anything to\nfix that?  No?  Well, I guess there are worse smells – like Ruby.  jk.\nBut seriously, ice > water and water < rain.  But…nevermind.  1 × 1?  1.\n“You’re a good kid,” he said.  “Keep it up.”]
 
-    story.body.should.equal body_html 
-    story.body_plain.should.equal body_plain 
+    story.body.should.equal body_html
+    story.body_plain.should.equal body_plain
   end
 
   specify "should be able to do on-demand textile caching" do
@@ -131,7 +131,7 @@ context "An ActiveRecord instance acting as textiled" do
     story.textilize
 
     story.textiled.size.should.equal 2
-    story.description.should.equal desc_html 
+    story.description.should.equal desc_html
   end
 
   specify "should work well with after_find callbacks" do
@@ -139,7 +139,7 @@ context "An ActiveRecord instance acting as textiled" do
 
     desc_html = '<i>Beautify</i> your <strong>IRb</strong> prompt'
 
-    story.textiled.size.should.equal 2 
+    story.textiled.size.should.equal 2
     story.description.should.equal desc_html
   end
 end
