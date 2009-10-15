@@ -1,14 +1,12 @@
 $:.unshift File.dirname(__FILE__) + '/../lib'
 
 begin
-  require 'rubygems'
+  require 'acts_as_sanitiled'
   require 'yaml'
-  require 'mocha'
-  require 'active_support'
   require 'test/spec'
-  require 'RedCloth'
+  require 'active_support'
 rescue LoadError
-  puts "acts_as_textiled requires the mocha and test-spec gems to run its tests"
+  puts "acts_as_sanitiled requires yaml, and test-spec to run its tests"
   exit
 end
 
@@ -53,7 +51,7 @@ class ActiveRecord
   end
 end unless defined? ActiveRecord
 
-require 'acts_as_sanitiled.rb'
+ActiveRecord::Base.send(:include, ActsAsSanitiled)
 
 class Author < ActiveRecord::Base
   acts_as_textiled :blog, [:lite_mode]

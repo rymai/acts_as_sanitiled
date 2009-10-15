@@ -1,8 +1,6 @@
 = Acts as Sanitiled
 
-This plugin, based on Chris Wanstrath's venerable acts_as_textiled, extends the
-automatic textiling functionality to sanitization as well using as its basis Ryan
-Grove's powerful yet simple Sanitize gem.
+This plugin, based on Chris Wanstrath's venerable acts_as_textiled, extends the automatic textiling functionality to sanitization as well using as its basis Ryan Grove's powerful yet simple Sanitize gem.
 
 The reasoning behind this approach is simple.  Filtering input before it is saved to the database (as xss_terminate and many other popular plugins do) often fails to preserve user intent.  On the other hand, filtering output at the template level is error prone, and you are begging to get pwned.  Short of some sort of taint mode (which Rails 3 will have!), I believe the method employed by acts_as_textiled is the next best thing: you get safe output by default, but input is never corrupted.
 
