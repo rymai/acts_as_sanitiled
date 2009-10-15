@@ -12,15 +12,14 @@ The reasoning behind this approach is simple.  Filtering input before it is save
 
 == Changes from acts_as_textiled
 
-acts_as_sanitiled mostly maintains the API, but one noticeable difference is that it
-needs to expose the Sanitize config.  Therefore acts_as_textiled use of a hash to
-provide per-column RedCloth configuration had to be replaced with Sanitize config.
-RedCloth options can still be passed as an array that applies to all fields listed.
+acts_as_sanitiled mostly maintains the API, but one noticeable difference is that it needs to expose the Sanitize config.  Therefore acts_as_textiled use of a hash to provide per-column RedCloth configuration had to be replaced with Sanitize config. RedCloth options can still be passed as an array that applies to all fields listed.
+
+The other big change is that acts_as_sanitiled uses Sanitize which outputs utf8 rather than HTML entities.  For my own purposes this is preferable anyway, but it might give someone a few headaches getting encoding issues.  My advice: take your lumps now and figure out your encoding pipelines.
 
 == Usage
 
   class Story < ActiveRecord::Base
-    acts_as_textiled :body_text, :description
+    acts_as_sanitiled :body_text, :description
   end
 
   >> story = Story.find(3)
@@ -71,6 +70,24 @@ a specific attribute simply pass one or more options in an array after the field
 
   class Story < ActiveRecord::Base
     acts_as_sanitiled :body_text, :description, [ :lite_mode ]
+  end
+
+Of course you can combine them as well:
+
+  class Story < ActiveRecord::Base
+    acts_as_sanitiled :body_text, :description, [ :lite_mode ], :elements => ['a'], :add_attributes => {'a' => {'rel' => 'nofollow'}}
+  end
+
+Suppose you want to sanitize but not textilize:
+
+  class Story < ActiveRecord::Base
+    acts_as_sanitized :body_text, :elements => ['br', 'p']
+  end
+
+Or vice-versa:
+
+  class Story < ActiveRecord::Base
+    acts_as_textilized :body_text, [ :lite_mode ]
   end
 
 Get it?  Now let's say you have an admin tool and you want the text to be displayed
