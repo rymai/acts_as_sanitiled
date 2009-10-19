@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{acts_as_sanitiled}
-  s.version = "1.0.0"
+  s.version = "1.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Gabe da Silveira"]
-  s.date = %q{2009-10-14}
+  s.date = %q{2009-10-19}
   s.description = %q{A modernized version of Chris Wansthrath's venerable acts_as_textiled. It automatically textiles and then sanitizes columns to your specification.  Ryan Grove's excellent Sanitize gem with nokogiri provides the backend for speedy and robust filtering of your output in order to: restrict Textile to a subset of HTML, guarantee well-formedness, and of course prevent XSS.}
   s.email = %q{gabe@websaviour.com}
   s.extra_rdoc_files = [
@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "acts_as_sanitiled.gemspec",
      "lib/acts_as_sanitiled.rb",
      "rails/init.rb",
      "spec/sanitiled_spec.rb",
