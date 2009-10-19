@@ -1,8 +1,15 @@
 require 'rubygems'
 require 'sanitize'
 require 'RedCloth'
+require 'activesupport'
 
 module ActsAsSanitiled #:nodoc: all
+  mattr_accessor :default_redcloth_options
+  mattr_accessor :default_sanitize_options
+
+  @@default_redcloth_options = []
+  @@default_sanitize_options = Sanitize::Config::RELAXED
+
   def self.included(klass)
     klass.extend ClassMethods
   end
@@ -27,14 +34,14 @@ module ActsAsSanitiled #:nodoc: all
 
       @textiled_unicode = String.new.respond_to? :chars
 
-      options = attributes.last.is_a?(Hash) ? attributes.pop : {}
-      skip_textile = options.delete(:skip_textile)
-      skip_sanitize = options.delete(:skip_sanitize)
+      options = attributes.last.is_a?(Hash) ? attributes.pop : nil
+      skip_textile = options && options.delete(:skip_textile)
+      skip_sanitize = options && options.delete(:skip_sanitize)
 
       raise 'Both textile and sanitize were skipped' if skip_textile && skip_sanitize
 
-      sanitize_options = options.empty? ? Sanitize::Config::RELAXED : options
-      red_cloth_options = attributes.last && attributes.last.is_a?(Array) ? attributes.pop : []
+      sanitize_options = options.nil? ? ActsAsSanitiled.default_sanitize_options : options
+      red_cloth_options = attributes.last && attributes.last.is_a?(Array) ? attributes.pop : ActsAsSanitiled.default_redcloth_options
 
       raise 'No attributes were specified to filter' if attributes.empty?
 

@@ -105,10 +105,14 @@ Or vice-versa:
     acts_as_textilized :body_text, [ :lite_mode ]
   end
 
-Get it?  Now let's say you have an admin tool and you want the text to be displayed
-in the text boxes / fields as plaintext.  Do you have to change all your views?
+== Default options
 
-Hell no.
+Most likely you want to use the same options throughout your application, but perhaps not the same options I like.  You can set the default options for both Sanitize and RedCloth like so.
+
+  ActsAsSanitiled.default_redcloth_options = [:no_span_caps]
+  ActsAsSanitiled.default_sanitize_options = {:elements => ['em','strong','p','br']}
+
+This should be done in +environment.rb+ or an initializer so it will run before your ActiveRecord classes are defined.
 
 == form_for
 
