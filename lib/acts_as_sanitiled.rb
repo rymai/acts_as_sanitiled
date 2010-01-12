@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'sanitize'
 require 'RedCloth'
-require 'activesupport'
+require 'active_support'
 
 module ActsAsSanitiled #:nodoc: all
   mattr_accessor :default_redcloth_options
