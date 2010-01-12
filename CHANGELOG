@@ -1,2 +1,9 @@
-1.0.0 (10-14-09)
-Initial butchering of defunkt's work.
+1.1.1 (2010-01-12)
+* Fix Rails 3 deprecation (Beefy)
+
+1.1.0 (2010-10-19)
+* Add acts_as_sanitized and acts_as_textiled helpers to separate out the functionality.
+* Add default_sanitize_options and default_textile_options class variables.
+
+1.0.0 (2009-10-14)
+* Initial butchering of defunkt's work.
