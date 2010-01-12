@@ -25,6 +25,15 @@ Then in your Rails environment.rb:
 
   config.gem 'acts_as_sanitiled'
 
+== Known Issues
+
+The tests are passing for me with Sanitize 1.1.0 and Nokogiri 1.4.0 under my native ruby install of 1.8.6.  However under 1.8.7 (using rvm) I get a whitespace error in the sanitized html, which results in paragraphs and line breaks not having line breaks, and thus screws up the output of attribute(:plain).  I haven't been able to figure out what the problem is yet, but if you see a test failure on:
+
+   ./spec/sanitiled_spec.rb:49: A standard textiled object - should properly textilize and strip html
+
+Let me know if you are able to help debug.
+
+
 == Changes from acts_as_textiled
 
 acts_as_sanitiled mostly maintains the API, but one noticeable difference is that it needs to expose the Sanitize config.  Therefore acts_as_textiled use of a hash to provide per-column RedCloth configuration had to be replaced with Sanitize config. RedCloth options can still be passed as an array that applies to all fields listed.
