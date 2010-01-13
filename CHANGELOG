@@ -1,5 +1,5 @@
 1.1.1 (2010-01-12)
-* Fix Rails 3 deprecation (Beefy)
+* Fix Rails 3 deprecation (Ralph von der Heyden)
 
 1.1.0 (2010-10-19)
 * Add acts_as_sanitized and acts_as_textiled helpers to separate out the functionality.
