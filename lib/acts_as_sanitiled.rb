@@ -99,7 +99,7 @@ module ActsAsSanitiled #:nodoc: all
       self.class.textiled_attributes.each { |attr| __send__(attr) }
     end
 
-    def reload
+    def reload(*args)
       textiled.clear
       super
     end

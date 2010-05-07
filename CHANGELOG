@@ -1,3 +1,5 @@
+* Make reload method more compatible (eg. with globalize2)
+
 1.1.1 (2010-01-12)
 * Fix Rails 3 deprecation (Ralph von der Heyden)
 
