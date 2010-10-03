@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sanitize'
 require 'RedCloth'
 require 'active_support'
+require 'acts_as_sanitiled/railtie' if defined?(Rails)
 
 module ActsAsSanitiled #:nodoc: all
   mattr_accessor :default_redcloth_options
